@@ -4,13 +4,19 @@ namespace App\Http\Controllers;
 
 use App\Models\Product;
 use App\Http\Requests\ProductRequest;
+use Illuminate\Support\Facades\Auth;
 
 class ProductController extends Controller
 {
+    public function __construct()
+    {
+        $this->authorizeResource(Product::class);
+    }
+    
     public function index()
     {
-        //$products = Product::available()->get();
-        $products = Product::all();
+        //$products = Product::all();
+        $products = Product::available()->get();
         return view('products.index', compact('products'));
     }
 
@@ -32,26 +38,18 @@ class ProductController extends Controller
 
     public function edit(Product $product)
     {
-       // $this->authorize('update', $product);
         return view('products.edit', compact('product'));
     }
 
     public function update(ProductRequest $request, Product $product)
     {
-      //  $this->authorize('update', $product);
-
         $data = $request->validated();
-      /*  if ($request->user()->role !== config('products.role')) {
-            unset($data['article']);
-        }*/
         $product->update($data);
-
         return redirect()->route('products.index');
     }
 
     public function destroy(Product $product)
     {
-        //$this->authorize('delete', $product);
         $product->delete();
         return redirect()->route('products.index');
     }

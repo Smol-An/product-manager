@@ -5,13 +5,14 @@ namespace App\Policies;
 use App\Models\Product;
 use App\Models\User;
 use Illuminate\Auth\Access\Response;
+use Illuminate\Support\Facades\Auth;
 
 class ProductPolicy
 {
     /**
      * Determine whether the user can view any models.
      */
-    public function viewAny(User $user): bool
+    public function viewAny(?User $user): bool
     {
         return true;
     }
@@ -19,7 +20,7 @@ class ProductPolicy
     /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user, Product $product): bool
+    public function view(?User $user, Product $product): bool
     {
         return true;
     }
@@ -29,7 +30,7 @@ class ProductPolicy
      */
     public function create(User $user): bool
     {
-        return true;
+        return Auth::check();
     }
 
     /**
@@ -37,8 +38,11 @@ class ProductPolicy
      */
     public function update(User $user, Product $product): bool
     {
-        //return $user->role === config('products.role');
-        return true;
+        if ($user->role === config('products.role')) {
+            return true;
+        }
+    
+        return Auth::check();
     }
 
     /**
@@ -46,8 +50,7 @@ class ProductPolicy
      */
     public function delete(User $user, Product $product): bool
     {
-        //return $user->role === config('products.role');
-        return true;
+        return Auth::check();
     }
 
     /**
@@ -55,16 +58,14 @@ class ProductPolicy
      */
     public function restore(User $user, Product $product): bool
     {
-        //return $user->role === config('products.role');
-        return true;
+        return Auth::check();
     }
-
+    
     /**
      * Determine whether the user can permanently delete the model.
      */
     public function forceDelete(User $user, Product $product): bool
     {
-        //return $user->role === config('products.role');
-        return true;
+        return Auth::check();
     }
 }

@@ -11,21 +11,7 @@ class ProductRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        $product = $this->route('product');
-        $userRole = config('products.role');
-
-        if ($this->isMethod('post')) {
-            return true;
-        }
-
-        if ($this->isMethod('put') || $this->isMethod('patch')) {
-            if ($product && $this->user()->role === $userRole) {
-                return true;
-            }
-            return $product && $this->user()->can('update', $product);
-        }
-
-        return false;
+        return true;
     }
 
     /**
